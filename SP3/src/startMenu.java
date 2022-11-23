@@ -24,6 +24,7 @@ public class startMenu {
     }
     public void addUser(String username, String password){
         if(this.usernameCheck(userdata, username)){
+            mainMenu.spaces();
             System.out.println("This username is taken");
         }
         else {

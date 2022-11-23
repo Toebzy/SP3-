@@ -49,7 +49,7 @@ public class Main {
             System.out.println("Type your password:");
             System.out.println("-------------------");
             String inputpassword = keyboardlogin.nextLine();
-            if (startmenu.runLogin(inputusername, inputpassword)) {
+            if (SQL.loginCheck(inputusername,inputpassword) && startmenu.runLogin(inputusername, inputpassword)) {
                 mainMenu.spaces();
                 System.out.println("---------------------");
                 System.out.println("You are now logged in");

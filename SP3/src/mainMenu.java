@@ -111,7 +111,6 @@ public class mainMenu {
                     runMainMenu();
                 }
                     else if(nextkey == 1) {
-
                     startMenu.getCurrentUser().deleteMedia();
                     runMainMenu();
                 }

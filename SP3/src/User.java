@@ -232,7 +232,8 @@ public class User {
             if (userInt2 == 1) {
                 mainMenu.spaces();
                 String toBePrinted = savedMovies[userInt] + " has been removed from your saved media list";
-
+                System.out.println("-------------------------------------------------");
+                SQL.deleteMedia(true,savedMovies[userInt]);
                 List<String> mediaList;
                 String[] noneList = {"none"};
                 if (1 == savedMovies.length) {
@@ -253,14 +254,6 @@ public class User {
             }
 
         }
-        else {
-            mainMenu.spaces();
-            System.out.println("-------------------------");
-            System.out.println("Please type '1-2' instead");
-            System.out.println("-------------------------");
-            mainMenu.runMainMenu();
-        }
-
         if (userInput.equals("2"))                           //Execution if user wants to delete movie
         {
             if (Objects.equals(savedSeries[0], "none")) {
@@ -291,6 +284,7 @@ public class User {
                 mainMenu.spaces();
                 String toBePrinted = savedSeries[userInt] + " has been removed from your saved media list";
                 System.out.println("-------------------------------------------------");
+                SQL.deleteMedia(false,savedSeries[userInt]);
                 List<String> mediaList;
                 String[] noneList = {"none"};
                 if (1 == savedSeries.length) {
