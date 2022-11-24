@@ -1,3 +1,6 @@
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -70,7 +73,7 @@ public class Movie extends aMedia {
                     titleSearch(search);
                 }
             }
-    public static void movieCategorySearch() {
+    public static void movieCategorySearch(boolean SQLE) {
 
 
         {
@@ -115,19 +118,23 @@ public class Movie extends aMedia {
                 System.out.println("------------------");
                 mainMenu.runMainMenu();
             }
-
-            for (Movie p : createMedia.movies) {
-                for (String s : p.mediaCategory) {
-                    if (s.contains(categoryChoice[choiceNumber])) {
-                        foundMovies.add(p);
+                for (Movie p : createMedia.movies) {
+                    for (String s : p.mediaCategory) {
+                        if (s.contains(categoryChoice[choiceNumber])) {
+                            foundMovies.add(p);
+                        }
                     }
                 }
-            }
 
             if (foundMovies.size() > 0) {
-                for (Movie p : foundMovies) {
-                    System.out.println(movieNumber + ". " + p);
-                    movieNumber++;
+                if (SQLE){
+                    SQL.sqlCategorysearch(true, categoryChoice[choiceNumber]); ;
+                }
+                else if (!SQLE) {
+                    for (Movie p : foundMovies) {
+                        System.out.println(movieNumber + ". " + p);
+                        movieNumber++;
+                    }
                 }
                 System.out.println("--------------------------------------");
                 System.out.println("Select a movie, or press '0' to return");
@@ -155,9 +162,9 @@ public class Movie extends aMedia {
                 int nextChoice = choice.nextInt();
 
                 if (nextChoice == 0) {
-                    movieCategorySearch();
+                    movieCategorySearch(true);
                 } else if (nextChoice != 0) {
-                    movieCategorySearch();
+                    movieCategorySearch(true);
                 }
             }
         }

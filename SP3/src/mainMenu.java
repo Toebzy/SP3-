@@ -53,16 +53,24 @@ public class mainMenu {
                         Scanner searcher = new Scanner(System.in);
                         String search = searcher.nextLine();
 
-                        Movie.titleSearch(search);
-
+                        if (SQLEnabled){
+                            SQL.searchMedia(true, search);
+                        }
+                        else if (!SQLEnabled) {
+                            Movie.titleSearch(search);
+                        }
                     } else if (choisees == 2) {
                         System.out.println("--------------------------------");
                         System.out.println("Type to search, or '0' to return");
                         System.out.println("--------------------------------");
                         Scanner searcher = new Scanner(System.in);
                         String search = searcher.nextLine();
-
-                        Series.titleSearchSeries(search);
+                        if (SQLEnabled){
+                            SQL.searchMedia(false, search);
+                        }
+                        else if (!SQLEnabled) {
+                            Series.titleSearchSeries(search);
+                        }
                     } else if (choisees != 1 || choisees != 2) {                //catches wrong number input
                         mainMenu.spaces();
                         System.out.println("-------------------------------");
@@ -264,11 +272,11 @@ public class mainMenu {
         Scanner movieorseries = new Scanner(System.in);
         String inputmovieorseries = movieorseries.nextLine();
         if (inputmovieorseries.equals("1")) {
-            Movie.movieCategorySearch();
+            Movie.movieCategorySearch(SQLEnabled);
         }
         if (inputmovieorseries.equals("2"))
         {
-            Series.seriesCategorySearch();
+            Series.seriesCategorySearch(SQLEnabled);
         }
         else
         {

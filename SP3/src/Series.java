@@ -81,7 +81,7 @@ public class Series extends aMedia {
                 " |YEAR| = " + mediaReleaseYear+
                 " |SEASONS-EPISODES| "+ Arrays.toString(seriesSeasons).replace("[","").replace("]","");
     }
-    public static void seriesCategorySearch()
+    public static void seriesCategorySearch(boolean SQLE)
     {
         System.out.println("------------------------");
         System.out.println("You have selected series");
@@ -134,6 +134,9 @@ public class Series extends aMedia {
         }
 
         if (foundSeries.size() > 0) {
+            if (SQLE){
+                SQL.sqlCategorysearch(false, categoryChoice[choiceNumber]); ;
+            }
             for (Series p : foundSeries) {
                 System.out.println(seriesNumber + ". " + p);
                 seriesNumber++;
@@ -171,9 +174,9 @@ public class Series extends aMedia {
             int nextChoice = choice.nextInt();
 
             if (nextChoice == 0) {
-                seriesCategorySearch();
+                seriesCategorySearch(true);
             } else if (nextChoice != 0) {  //anti-brat measure
-                seriesCategorySearch();
+                seriesCategorySearch(true);
             }
         }
     }

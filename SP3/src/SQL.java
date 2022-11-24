@@ -1,8 +1,7 @@
-import com.sun.security.jgss.GSSUtil;
-
-import javax.xml.transform.Result;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 public class SQL {
     static Connection connection;
@@ -272,6 +271,178 @@ public class SQL {
             }
         }
     }
+    public static void sqlCategorysearch(boolean isMovie, String catSearch){
+        List<Movie> sqlCatMSearch = new ArrayList<>();
+        List<Series> sqlCatSSearch = new ArrayList<>();
+        int number = 1;
+        try {
+            if (isMovie) {
+                String meow = "SELECT * FROM sp3_media.movies WHERE Category LIKE ?";
+                PreparedStatement statement = connection.prepareStatement(meow);
+                statement.setString(1, "%" + catSearch + "%");
+                ResultSet resultCheck = statement.executeQuery();
+                while (resultCheck.next()) {
+                    String movieTitle = resultCheck.getString("Title");
+                    String releaseYear = resultCheck.getString("Release Year");
+                    String movieCategory = resultCheck.getString("Category");
+                    String[] categories = movieCategory.replaceAll(" ", "").split(",");
+                    String movieRating = resultCheck.getString("Rating");
+                    Movie movie = new Movie(movieTitle, releaseYear, categories, movieRating);
+                    sqlCatMSearch.add(movie);
+                }
+                for (Movie i : sqlCatMSearch) {
+                    System.out.println(number + ". " + i);
+                    number++;
+                }
+            }
+            else if(!isMovie){
+                String meow = "SELECT * FROM sp3_media.series WHERE Category LIKE ?";
+                PreparedStatement statement = connection.prepareStatement(meow);
+                statement.setString(1, "%" + catSearch + "%");
+                ResultSet resultCheck = statement.executeQuery();
+                while (resultCheck.next()) {
+                    String movieTitle = resultCheck.getString("Title");
+                    String releaseYear = resultCheck.getString("Release Year");
+                    String movieCategory = resultCheck.getString("Category");
+                    String[] categories = movieCategory.replaceAll(" ", "").split(",");
+                    String movieRating = resultCheck.getString("Rating");
+                    String seriesSeasons = resultCheck.getString("Seasons/Episodes");
+                    String[] seasons = seriesSeasons.replaceAll(" ", "").split(",");
+                    Series serie = new Series(movieTitle, releaseYear, categories, movieRating, seasons);
+                    sqlCatSSearch.add(serie);
+                }
+                for (Series i : sqlCatSSearch) {
+                    System.out.println(number + ". " + i);
+                    number++;
+                }
+            }
+        }
+        catch (SQLException e){
+            System.out.println(e);
+        }
+    }
+
+    public static void searchMedia (boolean isMovie, String search) {
+        List<Movie> sqlMovieSearch = new ArrayList<>();
+        List<Series> sqlSeriesSearch = new ArrayList<>();
+        try {
+
+            if (isMovie) {
+                String movieSearch = "SELECT * FROM sp3_media.movies WHERE Title LIKE ?";
+                int number = 1;
+
+                PreparedStatement statement = SQL.connection.prepareStatement(movieSearch);
+                statement.setString(1, "%" + search + "%");
+                ResultSet result = statement.executeQuery();
+                while (result.next()) {
+                    String movieTitle = result.getString("Title");
+                    String releaseYear = result.getString("Release Year");
+                    String movieCategory = result.getString("Category");
+                    String[] categories = movieCategory.replaceAll(" ", "").split(",");
+                    String movieRating = result.getString("Rating");
+                    Movie movie = new Movie(movieTitle, releaseYear, categories, movieRating);
+                    sqlMovieSearch.add(movie);
+                }
+                for (Movie i : sqlMovieSearch) {
+                    System.out.println(number + ". " + i);
+                    number++;
+                }
+                if (sqlMovieSearch.size() <= 0) {
+                    mainMenu.spaces();
+                    System.out.println("----------------------------------------------");
+                    System.out.println("There are no matching movies, please try again");
+                    System.out.println("----------------------------------------------");
+                    mainMenu.runMainMenu();
+                }
+                System.out.println("--------------------------------------");
+                System.out.println("Select a movie, or press '0' to return");
+                System.out.println("--------------------------------------");
+                Scanner choice = new Scanner(System.in);
+
+                int nextChoice = choice.nextInt();
+
+                if (nextChoice == 0) {
+                    mainMenu.spaces();
+                    System.out.println("------------------");
+                    mainMenu.runMainMenu();
+
+                } else if (nextChoice <= sqlMovieSearch.size()) {
+                    String movieTitle = sqlMovieSearch.get(nextChoice - 1).getMediaTitle();
+                    mainMenu.mediaPlayer(movieTitle, true, false);
+                } else if (nextChoice > sqlMovieSearch.size() || nextChoice < sqlMovieSearch.size()) {
+
+                    mainMenu.spaces();
+
+                    System.out.println("-----------------------------------------");
+                    System.out.println("The movie was not found, please try again");
+                    System.out.println("-----------------------------------------");
+
+                    SQL.searchMedia(true, search);
+
+                }
+            } else if (!isMovie) {
+                String seriesSearch = "SELECT * FROM sp3_media.series WHERE Title LIKE ?";
+                int number = 1;
+
+                PreparedStatement statement = SQL.connection.prepareStatement(seriesSearch);
+                statement.setString(1, "%" + search + "%");
+                ResultSet result = statement.executeQuery();
+                while (result.next()) {
+                    String movieTitle = result.getString("Title");
+                    String releaseYear = result.getString("Release Year");
+                    String movieCategory = result.getString("Category");
+                    String[] categories = movieCategory.replaceAll(" ", "").split(",");
+                    String movieRating = result.getString("Rating");
+                    String seriesSeasons = result.getString("Seasons/Episodes");
+                    String[] seasons = seriesSeasons.replaceAll(" ", "").split(",");
+                    Series serie = new Series(movieTitle, releaseYear, categories, movieRating, seasons);
+                    sqlSeriesSearch.add(serie);
+                }
+                for (Series i : sqlSeriesSearch) {
+                    System.out.println(number + ". " + i);
+                    number++;
+                }
+                if (sqlSeriesSearch.size() <= 0) {
+                    mainMenu.spaces();
+                    System.out.println("----------------------------------------------");
+                    System.out.println("There are no matching series, please try again");
+                    System.out.println("----------------------------------------------");
+                    mainMenu.runMainMenu();
+                }
+                System.out.println("--------------------------------------");
+                System.out.println("Select a series, or press '0' to return");
+                System.out.println("--------------------------------------");
+                Scanner choice = new Scanner(System.in);
+
+                int nextChoice = choice.nextInt();
+
+                if (nextChoice == 0) {
+                    mainMenu.spaces();
+                    System.out.println("------------------");
+                    mainMenu.runMainMenu();
+
+                } else if (nextChoice <= sqlSeriesSearch.size()) {
+                    String movieTitle = sqlSeriesSearch.get(nextChoice - 1).getMediaTitle();
+                    mainMenu.mediaPlayer(movieTitle, false, true);
+                } else if (nextChoice > sqlSeriesSearch.size() || nextChoice < sqlSeriesSearch.size()) {
+
+                    mainMenu.spaces();
+
+                    System.out.println("-----------------------------------------");
+                    System.out.println("The series was not found, please try again");
+                    System.out.println("-----------------------------------------");
+
+                    SQL.searchMedia(false, search);
+
+                }
+            }
+        }
+
+        catch(SQLException e){
+                System.out.println(e);
+            }
+        }
+
 
     public static void checkForNone(int i) {
 
